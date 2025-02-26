@@ -3,6 +3,104 @@ import subprocess
 import os
 import random
 
+import random
+
+def generate_expression(max_depth=5):
+    """
+    随机生成包含x的表达式，遵循给定的语法规则。
+
+    Args:
+        max_depth: 最大递归深度，防止无限递归。
+
+    Returns:
+        一个字符串，表示生成的表达式。
+    """
+
+    def generate_whitespace():
+        """生成空白项"""
+        length = random.randint(0, 1)  # 空白字符的个数，可以调整
+        return "".join(random.choice([" ", "\t"]) for _ in range(length))
+
+    def generate_signed_integer():
+        """生成带符号的整数"""
+        sign = random.choice(["", "+", "-"])
+        integer = generate_integer()
+        return sign + integer
+
+    def generate_integer(maxLength=3):
+        """生成允许前导零的整数"""
+        length = random.randint(1, maxLength)  # 整数的位数，可以调整
+        return "".join(random.choice("0123456789") for _ in range(length))
+
+    def generate_exponent():
+        """生成指数"""
+        return "^" + generate_whitespace() + generate_integer(1)
+
+    def generate_power_function():
+        """生成幂函数"""
+        expression = "x"
+        if random.random() < 0.3:  # 30%的概率生成指数
+            expression += generate_whitespace() + generate_exponent()
+        return expression
+
+    def generate_constant_factor():
+        """生成常数因子"""
+        return generate_signed_integer()
+
+    def generate_expression_factor(depth):
+        """生成表达式因子"""
+        expression = "(" + generate_expression_recursive(depth - 1) + ")"
+        if random.random() < 0.3:  # 30%的概率生成指数
+            expression += generate_whitespace() + generate_exponent()
+        return expression
+
+    def generate_variable_factor():
+        """生成变量因子"""
+        return generate_power_function()
+
+    def generate_factor(depth):
+        """生成因子"""
+        rand = random.random()
+        if rand < 0.3:
+            return generate_variable_factor()
+        elif rand < 0.6:
+            return generate_constant_factor()
+        else:
+            return generate_expression_factor(depth)
+
+    def generate_term(depth):
+        """生成项"""
+        expression = ""
+        if random.random() < 0.2:
+            expression += random.choice(["+", "-"]) + generate_whitespace()
+
+        expression += generate_factor(depth)
+
+        while random.random() < 0.3:
+            expression += generate_whitespace() + "*" + generate_whitespace() + generate_factor(depth)
+
+        return expression
+
+
+    def generate_expression_recursive(depth):
+        """递归生成表达式"""
+        if depth <= 0:
+            return generate_signed_integer()  # 递归终止条件，返回一个简单的整数
+
+        expression = ""
+        if random.random() < 0.2:
+            expression += generate_whitespace() + random.choice(["+", "-"]) + generate_whitespace()
+
+        expression += generate_term(depth) + generate_whitespace()
+
+
+        while random.random() < 0.4:
+            expression += random.choice(["+", "-"]) + generate_whitespace() + generate_term(depth) + generate_whitespace()
+
+        return expression
+
+    return generate_expression_recursive(max_depth)
+
 def run_java_with_input_file_loop(java_files, input_file_path, main_class, java_dir, output_path):
     """
     编译并运行 Java 文件，循环指定次数，每次从输入文件中读取一行作为输入。
@@ -114,7 +212,11 @@ def are_expressions_equivalent(expr1_str, expr2_str, x_value_count=10):
     x = symbols('x')  # 定义符号变量
 
     try:
-        # 1. 使用 sympy 尝试简化表达式并比较
+        # 删除前导零
+        expr1_str = remove_leading_zeros_from_string(expr1_str)
+        expr2_str = remove_leading_zeros_from_string(expr2_str)
+
+        # 使用 sympy 尝试简化表达式并比较
         expr1 = expand(expr1_str)
         expr2 = expand(expr2_str)
 
@@ -136,31 +238,45 @@ def are_expressions_equivalent(expr1_str, expr2_str, x_value_count=10):
         print(f"表达式解析或计算时发生错误: {e}")
         return False  # 表达式无效
 
+import re
+# 定义一个函数来消除数字中的前导零
+def remove_leading_zeros_from_string(expr_str):
+    # 使用正则表达式匹配所有数字并去掉前导零
+    return re.sub(r'\b0+(\d+)', r'\1', expr_str)
+
 import configparser
 
 config = configparser.ConfigParser()
 config.read('config.ini', encoding='utf-8')
 
 java_file_folder_path = config['DEFAULT']['java_file_folder_path']
-input_file_path = config['DEFAULT']['input_file_path']
 java_dir = config['DEFAULT']['java_dir']
 main_class = config['DEFAULT']['main_class']
 output_path = config['DEFAULT']['output_folder_path']
+input_file_path = output_path + "input.txt"
+
+times  = 100
+input_lines = []
+for _ in range(times):
+    input_lines.append(generate_expression(1) + "\n")
+with open(input_file_path, "w") as f:
+    for s in input_lines:
+        f.write(s)
 
 java_files = find_java_files(java_file_folder_path)
 output = run_java_with_input_file_loop(java_files, input_file_path, main_class, java_dir, output_path)
 output = [s.replace("^", "**") for s in output]
-for _output in output:
-    print(_output)
 
-with open(input_file_path, "r") as f:
-    input_lines = f.readlines()
+for i, _output in enumerate(output):
+    print(f"你的输出第{i+1}行: {_output}")
+
+input_lines = [s.replace("\t", " ") for s in input_lines]
 
 # 是否出现错误
 all_right = True
 for i, (_input, _output) in enumerate(zip(input_lines, output)):
     res = are_expressions_equivalent(_input, _output)
-    print(f"line {i+1}: " + str(res))
+    print(f"第{i+1}行结果: " + str(res))
     all_right = all_right and res
 
 print("是否全部运行正确:" + str(all_right))
