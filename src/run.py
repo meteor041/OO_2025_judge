@@ -1,6 +1,7 @@
 from sympy import *
 import subprocess
 import os
+import random
 
 def run_java_with_input_file_loop(java_files, input_file_path, main_class, java_dir, output_path):
     """
@@ -114,17 +115,16 @@ def are_expressions_equivalent(expr1_str, expr2_str, x_value_count=10):
 
     try:
         # 1. 使用 sympy 尝试简化表达式并比较
-        expr1 = sympify(expr1_str)
-        expr2 = sympify(expr2_str)
+        expr1 = expand(expr1_str)
+        expr2 = expand(expr2_str)
 
         simplified_expr1 = simplify(expr1)
         simplified_expr2 = simplify(expr2)
 
-        if simplified_expr1 == simplified_expr2:
-            return True
+        if simplified_expr1 != simplified_expr2:
+            return False
 
         # 2. 数值比较 (如果 sympy 无法确定)
-        import random
         for _ in range(x_value_count):
             x_val = random.uniform(-10, 10)  # 生成随机的 x 值
             if abs(expr1.subs(x, x_val) - expr2.subs(x, x_val)) > 1e-6:  # 允许一定的误差
@@ -140,7 +140,6 @@ def are_expressions_equivalent(expr1_str, expr2_str, x_value_count=10):
 java_file_folder_path = ["C:\\Users\\Liu Xinyu\\IdeaProjects\\oo_homework_2025_23371510_hw_1\\src",
                          "C:\\Users\\Liu Xinyu\\IdeaProjects\\oo_homework_2025_23371510_hw_1\\src\\node"]
 java_files = find_java_files(java_file_folder_path[0]) + find_java_files(java_file_folder_path[1])
-print(java_files)
 input_file_path = "C:\\Users\\Liu Xinyu\\IdeaProjects\\oo_homework_2025_23371510_hw_1\\test\\file.txt"
 java_dir = "C:\\Users\\Liu Xinyu\\IdeaProjects\\oo_homework_2025_23371510_hw_1\\src"
 main_class = "MainClass"
