@@ -136,15 +136,18 @@ def are_expressions_equivalent(expr1_str, expr2_str, x_value_count=10):
         print(f"表达式解析或计算时发生错误: {e}")
         return False  # 表达式无效
 
+import configparser
 
-java_file_folder_path = ["C:\\Users\\Liu Xinyu\\IdeaProjects\\oo_homework_2025_23371510_hw_1\\src",
-                         "C:\\Users\\Liu Xinyu\\IdeaProjects\\oo_homework_2025_23371510_hw_1\\src\\node"]
-java_files = find_java_files(java_file_folder_path[0]) + find_java_files(java_file_folder_path[1])
-input_file_path = "C:\\Users\\Liu Xinyu\\IdeaProjects\\oo_homework_2025_23371510_hw_1\\test\\file.txt"
-java_dir = "C:\\Users\\Liu Xinyu\\IdeaProjects\\oo_homework_2025_23371510_hw_1\\src"
-main_class = "MainClass"
+config = configparser.ConfigParser()
+config.read('config.ini', encoding='utf-8')
 
-output_path = "C:\\Users\\Liu Xinyu\\PycharmProjects\\OO_hw1_judge\\log"
+java_file_folder_path = config['DEFAULT']['java_file_folder_path']
+input_file_path = config['DEFAULT']['input_file_path']
+java_dir = config['DEFAULT']['java_dir']
+main_class = config['DEFAULT']['main_class']
+output_path = config['DEFAULT']['output_path']
+
+java_files = find_java_files(java_file_folder_path)
 output = run_java_with_input_file_loop(java_files, input_file_path, main_class, java_dir, output_path)
 output = [s.replace("^", "**") for s in output]
 for _output in output:
@@ -153,5 +156,11 @@ for _output in output:
 with open(input_file_path, "r") as f:
     input_lines = f.readlines()
 
+# 是否出现错误
+all_right = True
 for i, (_input, _output) in enumerate(zip(input_lines, output)):
-    print(f"line {i+1}: " + str(are_expressions_equivalent(_input, _output)))
+    res = are_expressions_equivalent(_input, _output)
+    print(f"line {i+1}: " + str(res))
+    all_right = all_right and res
+
+print("是否全部运行正确:" + str(all_right))
