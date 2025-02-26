@@ -255,7 +255,7 @@ main_class = config['DEFAULT']['main_class']
 output_path = config['DEFAULT']['output_folder_path']
 input_file_path = output_path + "input.txt"
 
-times  = 100
+times  = int(input("输入运行次数："))
 input_lines = []
 for _ in range(times):
     input_lines.append(generate_expression(1) + "\n")
