@@ -145,7 +145,7 @@ java_file_folder_path = config['DEFAULT']['java_file_folder_path']
 input_file_path = config['DEFAULT']['input_file_path']
 java_dir = config['DEFAULT']['java_dir']
 main_class = config['DEFAULT']['main_class']
-output_path = config['DEFAULT']['output_path']
+output_path = config['DEFAULT']['output_folder_path']
 
 java_files = find_java_files(java_file_folder_path)
 output = run_java_with_input_file_loop(java_files, input_file_path, main_class, java_dir, output_path)
