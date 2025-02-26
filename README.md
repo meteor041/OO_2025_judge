@@ -8,7 +8,7 @@
   input_file_path : 输入文件所在路径
   java_dir : 主类文件所在目录位置
   main_class : 主类名称
-  output_path : Java文件运行结果输出位置
+  output_path : Java文件运行结果输出所在文件夹位置
   ```
 2. 运行run.py
   ``` Python
