@@ -1,7 +1,6 @@
 from sympy import *
 import subprocess
 import os
-import random
 
 import random
 
