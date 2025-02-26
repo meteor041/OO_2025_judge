@@ -114,7 +114,7 @@ def run_java_with_input_file_loop(java_files, input_file_path, main_class, java_
     Returns:
         包含每次运行的输出的列表。如果编译失败或运行出错，返回错误信息。
     """
-    output_path = output_path + "\\result.txt"
+    output_path = output_path + "/result.txt"
 
     try:
         # 1. 编译 Java 文件
@@ -156,7 +156,7 @@ def run_java_with_input_file_loop(java_files, input_file_path, main_class, java_
                 try:
                     mode = "w+" if i == 0 else "a"
                     with open(output_path, mode, encoding='utf-8') as f:  # 显式指定编码
-                        f.write(f"运行失败 (第 {i+1} 次):\n{stderr}")
+                        f.write(f"运行失败 (第 {i+1} 次): {stderr}")
                 except Exception as e:
                     print(f"写入文件时发生错误: {e}")  # 打印错误信息
             else:
@@ -164,7 +164,7 @@ def run_java_with_input_file_loop(java_files, input_file_path, main_class, java_
                 try:
                     mode = "w+" if i == 0 else "a"
                     with open(output_path, mode, encoding='utf-8') as f:  # 显式指定编码
-                        f.write(f"第 {i+1} 次运行输出:\n{stdout}")
+                        f.write(f"第 {i+1} 次运行输出: {stdout}")
                 except Exception as e:
                     print(f"写入文件时发生错误: {e}")  # 打印错误信息
 
@@ -274,6 +274,7 @@ input_lines = [s.replace("\t", " ") for s in input_lines]
 
 # 是否出现错误
 all_right = True
+
 for i, (_input, _output) in enumerate(zip(input_lines, output)):
     res = are_expressions_equivalent(_input, _output)
     print(f"第{i+1}行结果: " + str(res))
