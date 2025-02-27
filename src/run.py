@@ -4,6 +4,7 @@ import os
 import re
 import configparser
 import random
+from score import score_expr
 
 def generate_expression(max_depth=8):
     """
@@ -166,7 +167,7 @@ def run_java_with_input_file_loop(java_files, input_file_path, main_class, java_
                 try:
                     mode = "w+" if i == 0 else "a"
                     with open(output_path, mode, encoding='utf-8') as f:  # 显式指定编码
-                        f.write(f"第 {i+1} 次运行报错: {stderr}\n")
+                        f.write(f"第 {i+1} 次运行报错: {stderr.strip()}\n")
                 except Exception as e:
                     print(f"写入文件时发生错误: {e}")  # 打印错误信息
             else:
@@ -234,19 +235,21 @@ def are_expressions_equivalent(expr1_str, expr2_str, x_value_count=10):
         simplified_expr2 = simplify(expr2)
 
         if simplified_expr1 != simplified_expr2:
-            return False
+            return False, -1
+
+        score = score_expr(simplified_expr1, expr2_str)
 
         # 2. 数值比较 (如果 sympy 无法确定)
         for _ in range(x_value_count):
             x_val = random.uniform(-10, 10)  # 生成随机的 x 值
             if abs(expr1.subs(x, x_val) - expr2.subs(x, x_val)) > 1e-6:  # 允许一定的误差
-                return False
+                return False, -1
 
-        return True  # 数值比较也通过了
+        return True, score  # 数值比较也通过了
 
     except (SyntaxError, TypeError, ValueError) as e:
         print(f"表达式解析或计算时发生错误: {e}")
-        return False  # 表达式无效
+        return False, -1  # 表达式无效
 
 # 定义一个函数来消除数字中的前导零
 def remove_leading_zeros_from_string(expr_str):
@@ -294,10 +297,10 @@ def main():
 
     for i, (_input, _output) in enumerate(zip(input_lines, output)):
         if '(' in _output or ')' in _output:
-            res = False
+            res, score = False, -1
         else:
-            res = are_expressions_equivalent(_input, _output)
-        print(f"第{i+1}行结果: " + str(res))
+            (res, score) = are_expressions_equivalent(_input, _output)
+        print(f"第{i+1}行结果: " + str(res) + " 分数： " + str(score))
         all_right = all_right and res
 
     print("是否全部运行正确:" + str(all_right))
