@@ -117,7 +117,7 @@ def run_java_with_input_file_loop(java_files, input_file_path, main_class, java_
     Returns:
         包含每次运行的输出的列表。如果编译失败或运行出错，返回错误信息。
     """
-    output_path = output_path + "/result.txt"
+    output_path = os.path.join(output_path, "output.txt")
 
     try:
         # 1. 编译 Java 文件
@@ -153,13 +153,13 @@ def run_java_with_input_file_loop(java_files, input_file_path, main_class, java_
 
             stdout, stderr = process.communicate(input=line) # 将数据写入管道
             #process.wait()
-            
-            print(f'输出: {stdout}')
+
+            print(f'输出: {stdout.strip()}')
             if are_expressions_equivalent(line, stdout.replace("^", "**")):
                 state = 'Accepted!'
             else:
                 state = 'Failed.'
-            print(f'{state}\n')
+            print(f'{state}\n' + ('-' * 10))
 
             if process.returncode != 0:
                 outputs.append(f"{stderr}".strip())
@@ -174,13 +174,11 @@ def run_java_with_input_file_loop(java_files, input_file_path, main_class, java_
                 try:
                     mode = "w+" if i == 0 else "a"
                     with open(output_path, mode, encoding='utf-8') as f:  # 显式指定编码
-                        f.write(f"第 {i+1} 次运行 {state}: {stdout}\n")
+                        f.write(f"第 {i+1} 次运行 {state}: {stdout.strip()}\n")
                 except Exception as e:
                     print(f"写入文件时发生错误: {e}")  # 打印错误信息
 
-            
         return outputs  # 返回所有运行的输出
-    
 
     except subprocess.CalledProcessError as e:
         return f"错误:\n{e.stderr}"
@@ -276,16 +274,33 @@ def main():
         for _ in range(times):
             input_lines.append(generate_expression(1) + "\n")
         with open(input_file_path, "w") as f:
-            for s in input_lines:
+            for i, s in enumerate(input_lines):
                 f.write(s)
     else:
         with open(input_file_path, "r") as f:
             input_lines = f.readlines()
-            print(input_lines)
 
     java_files = find_java_files(java_file_folder_path)
     output = run_java_with_input_file_loop(java_files, input_file_path, main_class, java_dir, output_path)
-    
+    output = [s.replace("^", "**") for s in output]
+
+    for i, _output in enumerate(output):
+        print(f"你的输出第{i+1}行: {_output}")
+
+    input_lines = [s.replace("\t", " ") for s in input_lines]
+
+    # 是否出现错误
+    all_right = True
+
+    for i, (_input, _output) in enumerate(zip(input_lines, output)):
+        if '(' in _output or ')' in _output:
+            res = False
+        else:
+            res = are_expressions_equivalent(_input, _output)
+        print(f"第{i+1}行结果: " + str(res))
+        all_right = all_right and res
+
+    print("是否全部运行正确:" + str(all_right))
 
 if __name__ == '__main__':
     main()
