@@ -1,0 +1,10 @@
+第 1 次运行 Accepted!: x ^ 7
+第 2 次运行 Accepted!: 3744
+第 3 次运行 Accepted!: -6792
+第 4 次运行 Accepted!: 53 + x
+第 5 次运行 Accepted!: -14
+第 6 次运行 Accepted!: -2 * x
+第 7 次运行 Accepted!: 54032826156903427 * x
+第 8 次运行 Accepted!: 51682540549249 + x ^ 8
+第 9 次运行 Accepted!: 455 * x ^ 2
+第 10 次运行 Accepted!: -x + x ^ 3
