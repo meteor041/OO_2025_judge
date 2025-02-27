@@ -4,10 +4,10 @@
 
 1. 填充config.ini文件
   ```
-  java_file_folder_path : Java文件存储的文件夹
-  java_dir : 主类文件所在目录位置
-  main_class : 主类名称
-  output_folder_path : Java文件运行输出结果(result.txt)和自动生成测试样例文本(input.txt)所在文件夹位置
+  java_file_folder_path : Java文件存储的文件夹(绝对位置)
+  java_dir : 主类文件所在目录位置(绝对位置)
+  main_class : 主类名称(示例:MainClass)
+  output_folder_path : Java文件运行输出结果(`output.txt`)和自动生成测试样例文本(`input.txt`)所在文件夹位置(绝对位置)
   ```
 2. 运行run.py
   ``` Python
