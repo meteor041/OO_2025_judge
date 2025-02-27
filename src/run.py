@@ -27,9 +27,9 @@ def generate_expression(max_depth=5):
         integer = generate_integer()
         return sign + integer
 
-    def generate_integer(maxLength=3):
+    def generate_integer(max_length=3):
         """生成允许前导零的整数"""
-        length = random.randint(1, maxLength)  # 整数的位数，可以调整
+        length = random.randint(1, max_length)  # 整数的位数，可以调整
         return "".join(random.choice("0123456789") for _ in range(length))
 
     def generate_exponent():
