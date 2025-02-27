@@ -5,9 +5,9 @@ import re
 import configparser
 import random
 
-def generate_expression(max_depth=5):
+def generate_expression(max_depth=8):
     """
-    随机生成包含x的表达式，遵循给定的语法规则。
+    随机生成包含x的表达式, 遵循给定的语法规则。
 
     Args:
         max_depth: 最大递归深度，防止无限递归。
@@ -18,7 +18,7 @@ def generate_expression(max_depth=5):
 
     def generate_whitespace():
         """生成空白项"""
-        length = random.randint(0, 1)  # 空白字符的个数，可以调整
+        length = random.randint(0, 2)  # 空白字符的个数，可以调整
         return "".join(random.choice([" ", "\t"]) for _ in range(length))
 
     def generate_signed_integer():
@@ -27,9 +27,9 @@ def generate_expression(max_depth=5):
         integer = generate_integer()
         return sign + integer
 
-    def generate_integer(max_length=3):
+    def generate_integer(maxLength=4):
         """生成允许前导零的整数"""
-        length = random.randint(1, max_length)  # 整数的位数，可以调整
+        length = random.randint(1, maxLength)  # 整数的位数，可以调整
         return "".join(random.choice("0123456789") for _ in range(length))
 
     def generate_exponent():
@@ -85,7 +85,10 @@ def generate_expression(max_depth=5):
     def generate_expression_recursive(depth):
         """递归生成表达式"""
         if depth <= 0:
-            return generate_signed_integer()  # 递归终止条件，返回一个简单的整数
+            if random.random() < 0.5:
+                return generate_signed_integer()  # 递归终止条件，返回一个简单的整数
+            else:
+                return generate_variable_factor()
 
         expression = ""
         if random.random() < 0.2:
@@ -114,7 +117,7 @@ def run_java_with_input_file_loop(java_files, input_file_path, main_class, java_
     Returns:
         包含每次运行的输出的列表。如果编译失败或运行出错，返回错误信息。
     """
-    output_path = output_path + "/result.txt"
+    output_path = os.path.join(output_path, "output.txt")
 
     try:
         # 1. 编译 Java 文件
@@ -137,7 +140,7 @@ def run_java_with_input_file_loop(java_files, input_file_path, main_class, java_
         outputs = []
         for i, line in enumerate(input_lines):
             line = line.strip()  # 移除行尾的空白字符
-            print(f"第 {i+1} 次运行，输入: {line}")
+            print(f"第 {i+1} 次运行\n输入: {line}")
 
             process = subprocess.Popen(  # 使用 Popen 来实时输入数据
                 ["java", "-cp", java_dir, main_class],
@@ -151,12 +154,19 @@ def run_java_with_input_file_loop(java_files, input_file_path, main_class, java_
             stdout, stderr = process.communicate(input=line) # 将数据写入管道
             #process.wait()
 
+            print(f'输出: {stdout.strip()}')
+            if are_expressions_equivalent(line, stdout.replace("^", "**")):
+                state = 'Accepted!'
+            else:
+                state = 'Failed.'
+            print(f'{state}\n' + ('-' * 10))
+
             if process.returncode != 0:
                 outputs.append(f"{stderr}".strip())
                 try:
                     mode = "w+" if i == 0 else "a"
                     with open(output_path, mode, encoding='utf-8') as f:  # 显式指定编码
-                        f.write(f"运行失败 (第 {i+1} 次): {stderr}")
+                        f.write(f"第 {i+1} 次运行报错: {stderr}\n")
                 except Exception as e:
                     print(f"写入文件时发生错误: {e}")  # 打印错误信息
             else:
@@ -164,7 +174,7 @@ def run_java_with_input_file_loop(java_files, input_file_path, main_class, java_
                 try:
                     mode = "w+" if i == 0 else "a"
                     with open(output_path, mode, encoding='utf-8') as f:  # 显式指定编码
-                        f.write(f"第 {i+1} 次运行输出: {stdout}")
+                        f.write(f"第 {i+1} 次运行 {state}: {stdout.strip()}\n")
                 except Exception as e:
                     print(f"写入文件时发生错误: {e}")  # 打印错误信息
 
@@ -251,19 +261,24 @@ def main():
     java_dir = config['DEFAULT']['java_dir']
     main_class = config['DEFAULT']['main_class']
     output_path = config['DEFAULT']['output_folder_path']
-    input_file_path = output_path + "input.txt"
+    input_file_path = os.path.join(output_path, "input.txt")
 
-    times = input("输入运行次数：（最多100次,默认10次）")
-    if times == '':
-        times = 10
+    useGen = input("是否使用内置数据生成(y/n): ")
+    if useGen.lower() == 'y' or useGen == '':
+        times = input("输入运行次数: (最多1000次,默认10次): ")
+        if times == '':
+            times = 10
+        else:
+            times = min(int(times), 1000)
+        input_lines = []
+        for _ in range(times):
+            input_lines.append(generate_expression(1) + "\n")
+        with open(input_file_path, "w") as f:
+            for i, s in enumerate(input_lines):
+                f.write(s)
     else:
-        times  = min(int(times), 100)
-    input_lines = []
-    for _ in range(times):
-        input_lines.append(generate_expression(1) + "\n")
-    with open(input_file_path, "w") as f:
-        for s in input_lines:
-            f.write(s)
+        with open(input_file_path, "r") as f:
+            input_lines = f.readlines()
 
     java_files = find_java_files(java_file_folder_path)
     output = run_java_with_input_file_loop(java_files, input_file_path, main_class, java_dir, output_path)
@@ -278,7 +293,10 @@ def main():
     all_right = True
 
     for i, (_input, _output) in enumerate(zip(input_lines, output)):
-        res = are_expressions_equivalent(_input, _output)
+        if '(' in _output or ')' in _output:
+            res = False
+        else:
+            res = are_expressions_equivalent(_input, _output)
         print(f"第{i+1}行结果: " + str(res))
         all_right = all_right and res
 
