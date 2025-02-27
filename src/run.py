@@ -1,7 +1,8 @@
 from sympy import *
 import subprocess
 import os
-
+import re
+import configparser
 import random
 
 def generate_expression(max_depth=5):
@@ -237,46 +238,51 @@ def are_expressions_equivalent(expr1_str, expr2_str, x_value_count=10):
         print(f"表达式解析或计算时发生错误: {e}")
         return False  # 表达式无效
 
-import re
 # 定义一个函数来消除数字中的前导零
 def remove_leading_zeros_from_string(expr_str):
     # 使用正则表达式匹配所有数字并去掉前导零
     return re.sub(r'\b0+(\d+)', r'\1', expr_str)
 
-import configparser
+def main():
+    config = configparser.ConfigParser()
+    config.read('config.ini', encoding='utf-8')
 
-config = configparser.ConfigParser()
-config.read('config.ini', encoding='utf-8')
+    java_file_folder_path = config['DEFAULT']['java_file_folder_path']
+    java_dir = config['DEFAULT']['java_dir']
+    main_class = config['DEFAULT']['main_class']
+    output_path = config['DEFAULT']['output_folder_path']
+    input_file_path = output_path + "input.txt"
 
-java_file_folder_path = config['DEFAULT']['java_file_folder_path']
-java_dir = config['DEFAULT']['java_dir']
-main_class = config['DEFAULT']['main_class']
-output_path = config['DEFAULT']['output_folder_path']
-input_file_path = output_path + "input.txt"
+    times = input("输入运行次数：（最多100次,默认10次）")
+    if times == '':
+        times = 10
+    else:
+        times  = min(int(times), 100)
+    input_lines = []
+    for _ in range(times):
+        input_lines.append(generate_expression(1) + "\n")
+    with open(input_file_path, "w") as f:
+        for s in input_lines:
+            f.write(s)
 
-times  = min(int(input("输入运行次数：（最多100次）")), 100)
-input_lines = []
-for _ in range(times):
-    input_lines.append(generate_expression(1) + "\n")
-with open(input_file_path, "w") as f:
-    for s in input_lines:
-        f.write(s)
+    java_files = find_java_files(java_file_folder_path)
+    output = run_java_with_input_file_loop(java_files, input_file_path, main_class, java_dir, output_path)
+    output = [s.replace("^", "**") for s in output]
 
-java_files = find_java_files(java_file_folder_path)
-output = run_java_with_input_file_loop(java_files, input_file_path, main_class, java_dir, output_path)
-output = [s.replace("^", "**") for s in output]
+    for i, _output in enumerate(output):
+        print(f"你的输出第{i+1}行: {_output}")
 
-for i, _output in enumerate(output):
-    print(f"你的输出第{i+1}行: {_output}")
+    input_lines = [s.replace("\t", " ") for s in input_lines]
 
-input_lines = [s.replace("\t", " ") for s in input_lines]
+    # 是否出现错误
+    all_right = True
 
-# 是否出现错误
-all_right = True
+    for i, (_input, _output) in enumerate(zip(input_lines, output)):
+        res = are_expressions_equivalent(_input, _output)
+        print(f"第{i+1}行结果: " + str(res))
+        all_right = all_right and res
 
-for i, (_input, _output) in enumerate(zip(input_lines, output)):
-    res = are_expressions_equivalent(_input, _output)
-    print(f"第{i+1}行结果: " + str(res))
-    all_right = all_right and res
+    print("是否全部运行正确:" + str(all_right))
 
-print("是否全部运行正确:" + str(all_right))
+if __name__ == '__main__':
+    main()
