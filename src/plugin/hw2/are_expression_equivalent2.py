@@ -1,11 +1,8 @@
-from contextlib import nullcontext
-
-from src.plugin.score import score_expr
 from sympy import *
 import random
 import re
-from src.plugin.remove_leading_zero import remove_leading_zeros_from_string
-from src.plugin.spreader2 import expand_expression
+from src.plugin.public.remove_leading_zero import remove_leading_zeros_from_string
+from src.plugin.hw2.spreader2 import expand_expression
 def are_expressions_equivalent(expr1_str : list[str], expr2_str : str, x_value_count=10):
     """
     比较两个含 x 的表达式是否等价。

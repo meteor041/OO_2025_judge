@@ -1,10 +1,10 @@
 import os
 import configparser
 
-from src.plugin.are_expression_equivalent import are_expressions_equivalent
-from src.plugin.find_java_files import find_java_files
-from src.plugin.run_java_file import run_java_with_input_file_loop
-from src.plugin.generate1 import generate_expression
+from src.plugin.hw1.are_expression_equivalent1 import are_expressions_equivalent
+from src.plugin.public.find_java_files import find_java_files
+from src.plugin.hw1.run_java_file1 import run_java_with_input_file_loop
+from src.plugin.hw1.generate1 import generate_expression
 # def disable_print(*args, **kwargs):
 #     pass
 #

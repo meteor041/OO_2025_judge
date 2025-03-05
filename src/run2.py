@@ -1,10 +1,10 @@
 import os
 import configparser
 
-from plugin.find_java_files import find_java_files
-from plugin.generate2 import generate_expression
-from plugin.run_java_file2 import run_java_with_input_file_loop
-from plugin.are_expression_equivalent2 import are_expressions_equivalent
+from src.plugin.public.find_java_files import find_java_files
+from src.plugin.hw2.generate2 import generate_expression
+from src.plugin.hw2.run_java_file2 import run_java_with_input_file_loop
+from src.plugin.hw2.are_expression_equivalent2 import are_expressions_equivalent
 
 def run2(config_file= 'config.ini', cmd=None):
     config = configparser.ConfigParser()

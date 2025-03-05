@@ -1,6 +1,7 @@
 import os
 import subprocess
-from src.plugin.are_expression_equivalent2 import are_expressions_equivalent
+
+
 def run_java_with_input_file_loop(java_files, input_file_path, main_class, java_dir, output_path):
     """
     编译并运行 Java 文件，循环指定次数，每次从输入文件中读取一行作为输入。

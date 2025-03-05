@@ -1,8 +1,8 @@
-from src.plugin.score import score_expr
+from src.plugin.hw1.score1 import score_expr
 from sympy import *
 import random
 
-from src.plugin.remove_leading_zero import remove_leading_zeros_from_string
+from src.plugin.public.remove_leading_zero import remove_leading_zeros_from_string
 
 def are_expressions_equivalent(expr1_str, expr2_str, x_value_count=10):
     """
