@@ -2,7 +2,6 @@
 
 ## 项目简介
 
-项目简介
 本项目旨在为 OO2025 课程的学生提供一个自动化测试工具，用于测试 `Java` 作业的正确性。通过配置 `config.ini` 文件，程序可以自动运行指定的 `Java` 文件，并生成测试样例和输出结果。
 
 ## 项目结构
@@ -22,7 +21,7 @@ output_folder_path : Java文件运行输出结果(`output.txt`)和自动生成�
 示例 `config.ini` 文件内容:
 
 ```ini
-[java]
+[DEFAULT]
 java_file_folder_path = /path/to/your/java/files
 java_dir = /path/to/your/main/class/directory
 main_class = MainClass
