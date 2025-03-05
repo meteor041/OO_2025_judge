@@ -23,6 +23,7 @@ def generate_expression(max_depth=8, max_length=200) -> str:
     global arguments
     global tmp
     global forbid_function
+    function_type  = random.randint(0, 3)
     def generate_whitespace():
         """生成空白项"""
         length = random.randint(0, 2)  # 空白字符的个数，可以调整
@@ -157,7 +158,6 @@ def generate_expression(max_depth=8, max_length=200) -> str:
         global tmp
         global forbid_function
         arguments = ['x', 'y'] if function_type == 3 else ['x'] if function_type == 1 else ['y']
-        tmp = function_type
         value = 'x' if function_type == 1 else 'y' if function_type == 2 else 'x' + \
                                 generate_whitespace() + ',' + generate_whitespace() + 'y'
         forbid_function = True
