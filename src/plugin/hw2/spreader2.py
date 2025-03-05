@@ -118,15 +118,15 @@ class Spreader:
                 raise ValueError("Illegal iteration: Spreader.flag")
 
             # 根据 n 的值替换表达式
-            n = 2 if int(ns) > 2 else int(ns)
+            n = int(ns)
             if Spreader.flag == 1:
-                s = Spreader.definitions_list[n].replace("x", f'({param1})') \
+                s = Spreader.definitions_list[2 if n > 2 else n].replace("x", f'({param1})') \
                     .replace("n-1", str(n - 1)).replace("n-2", str(n - 2))
             elif Spreader.flag == 2:
-                s = Spreader.definitions_list[n].replace("y", f'({param2})') \
+                s = Spreader.definitions_list[2 if n > 2 else n].replace("y", f'({param2})') \
                     .replace("n-1", str(n - 1)).replace("n-2", str(n - 2))
             else:
-                s = Spreader.definitions_list[n].replace("x", f'({param1})').replace("y", f'({param2})') \
+                s = Spreader.definitions_list[2 if n > 2 else n].replace("x", f'({param1})').replace("y", f'({param2})') \
                     .replace("n-1", str(n - 1)).replace("n-2", str(n - 2))
 
             # 替换输入字符串中的函数调用
