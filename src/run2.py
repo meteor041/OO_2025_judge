@@ -18,6 +18,9 @@ def run2(config_file= 'config.ini', cmd=None):
 
     ai_enable = (config['GPT']['gpt_enable'] == 'y')
     api = config['GPT']['api']
+    base_url = config['GPT']['base_url']
+    model = config['GPT']['model']
+
     # auto_generation = config['COMMAND']['auto_generation']
     # run_times = config['COMMAND']['run_times']
     input_file_path = os.path.join(output_path, "input.txt")
@@ -69,7 +72,7 @@ def run2(config_file= 'config.ini', cmd=None):
     # 是否出现错误
     all_right = True
     for i, (_input, _output) in enumerate(zip(input_lines, output)):
-        res = are_expressions_equivalent(_input, _output, ai_enable, api)
+        res = are_expressions_equivalent(_input, _output, ai_enable, api, base_url, model)
         print(f"第{i + 1}行结果: " + str(res))
         all_right = all_right and res
 

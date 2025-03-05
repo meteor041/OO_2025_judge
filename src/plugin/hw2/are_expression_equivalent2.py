@@ -8,7 +8,9 @@ from ..hw2.spreader2 import expand_expression
 from ..public.ai_expression import ai_test_equivalent
 
 
-def are_expressions_equivalent(expr1_str : list[str], expr2_str : str, ai_enable=False, api=None, x_value_count=10):
+def are_expressions_equivalent(expr1_str : list[str], expr2_str : str,
+                               ai_enable=False, api=None, base_url, model,
+                               x_value_count=10):
     """
     比较两个含 x 的表达式是否等价。
 
@@ -73,7 +75,7 @@ def are_expressions_equivalent(expr1_str : list[str], expr2_str : str, ai_enable
     expr2 = parse_expr(expr2)
 
     if ai_enable == True:
-        return ai_test_equivalent(expr1, expr2, api) == 0
+        return ai_test_equivalent(expr1, expr2, api, base_url, model) == 0
 
     # # 2. 数值比较 (如果 sympy 无法确定)
     res = True

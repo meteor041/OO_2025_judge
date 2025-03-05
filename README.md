@@ -43,8 +43,18 @@ output_folder_path = /path/to/output/folder
 
         ``` bash
         cd src
-        python run.py
+        python run2.py
         ```
+      
+   3. 大语言模型辅助测试程序
+        在 `config.ini` 文件中作如下修改(仅作示例),可以通过API调用大语言模型进行字符串的相等判断. 这种方法在面对长表达式时的可靠性较差.
+      ```ini
+      [GPT]
+      gpt_enable = y
+      api = sk-1234567890
+      base_url = https://api.deepseek.com/v1
+      model = deepseek-chat
+      ```
       
 3. 查看输出结果
 
