@@ -92,6 +92,8 @@ output_folder_path = /path/to/output/folder
    
    - 确保测试样例 `input.txt` 已正确生成。
 
+## 借鉴的代码项目
+- [AI_expression_checker](https://github.com/messmerr/AI_expression_checker)
 ## 贡献
 
 如果你有任何改进建议或发现问题，欢迎提交 `Issue` 或 `Pull Request`。
