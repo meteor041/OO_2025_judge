@@ -55,7 +55,7 @@ output_folder_path = /path/to/output/folder
 
 - `output.txt`: `Java` 程序运行的结果。
 
-4. 注意事项
+## 注意事项
 
 - 确保 `config.ini` 文件中的路径配置正确，特别是绝对路径的准确性。
 
@@ -63,7 +63,7 @@ output_folder_path = /path/to/output/folder
 
 - 如果 `Java` 文件有依赖库，请确保这些库已正确配置在 `CLASSPATH` 中
 
-5. 常见问题
+## 常见问题
 
    1. 程序无法找到 `Java` 文件
    
@@ -83,10 +83,10 @@ output_folder_path = /path/to/output/folder
    
    - 确保测试样例 `input.txt` 已正确生成。
 
-6. 贡献
+## 贡献
 
 如果你有任何改进建议或发现问题，欢迎提交 `Issue` 或 `Pull Request`。
 
-7. 许可证
+## 许可证
 
 本项目采用 MIT 许可证。详情请参阅 LICENSE 文件。
