@@ -89,4 +89,4 @@ output_folder_path = /path/to/output/folder
 
 ## 许可证
 
-本项目采用 MIT 许可证。详情请参阅 LICENSE 文件。
+本项目采用 MIT 许可证。详情请参阅 [LICENSE](https://github.com/meteor041/OO_2025_judge/blob/main/LICENSE) 文件。
