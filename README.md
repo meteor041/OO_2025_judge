@@ -1,4 +1,4 @@
-# OO2025第一周作业测试程序
+# OO2025作业测试程序
 
 ## 步骤
 
@@ -9,7 +9,13 @@
   main_class : 主类名称(示例:MainClass)
   output_folder_path : Java文件运行输出结果(`output.txt`)和自动生成测试样例文本(`input.txt`)所在文件夹位置(绝对位置)
   ```
-2. 运行run.py
+2. 运行第一周作业测试程序
+  ``` Python
+cd src
+python run.py
+  ```
+
+3. 运行第二周作业测试程序
   ``` Python
 cd src
 python run.py
