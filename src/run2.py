@@ -1,18 +1,12 @@
 import os
 import configparser
 
-from src.plugin.are_expression_equivalent import are_expressions_equivalent
-from src.plugin.find_java_files import find_java_files
-from src.plugin.run_java_file import run_java_with_input_file_loop
-from src.plugin.generate1 import generate_expression
-# def disable_print(*args, **kwargs):
-#     pass
-#
-#
-# # 替换 print
-# print = disable_print
+from plugin.find_java_files import find_java_files
+from plugin.generate2 import generate_expression
+from plugin.run_java_file2 import run_java_with_input_file_loop
+from plugin.are_expression_equivalent2 import are_expressions_equivalent
 
-def run(config_file='config.ini', cmd=None):
+def run2(config_file= 'config.ini', cmd=None):
     config = configparser.ConfigParser()
     config.read(config_file, encoding='utf-8')
 
@@ -20,6 +14,9 @@ def run(config_file='config.ini', cmd=None):
     java_dir = config['DEFAULT']['java_dir']
     main_class = config['DEFAULT']['main_class']
     output_path = config['DEFAULT']['output_folder_path']
+
+    # auto_generation = config['COMMAND']['auto_generation']
+    # run_times = config['COMMAND']['run_times']
     input_file_path = os.path.join(output_path, "input.txt")
     if not os.path.exists(os.path.dirname(input_file_path)):
         os.mkdir(os.path.dirname(input_file_path))
@@ -31,15 +28,31 @@ def run(config_file='config.ini', cmd=None):
             times = 10
         else:
             times = min(int(times), 1000)
-        input_lines = []
+        input_lines = None
         for _ in range(times):
-            input_lines.append(generate_expression(1) + "\n")
+            if (input_lines == None):
+                input_lines = [generate_expression(8) + "\n"]
+            else:
+                input_lines.append(generate_expression(8) + "\n")
         with open(input_file_path, "w") as f:
             for i, s in enumerate(input_lines):
                 f.write(s)
     else:
         with open(input_file_path, "r") as f:
-            input_lines = f.readlines()
+            input_lines = None
+            new = ""
+            para_length = 5
+            count = 0
+            for line in f:
+                if count == 0:
+                    para_length = 5 if line.strip() == '1' else 2
+                new += line
+                count += 1
+                if count == para_length:
+                    if input_lines == None:
+                        input_lines = [new]
+                    else:
+                        input_lines.append(new)
 
     java_files = find_java_files(java_file_folder_path)
     output = run_java_with_input_file_loop(java_files, input_file_path, main_class, java_dir, output_path)
@@ -48,17 +61,13 @@ def run(config_file='config.ini', cmd=None):
     for i, _output in enumerate(output):
         print(f"你的输出第{i+1}行: {_output}")
 
-    input_lines = [s.replace("\t", " ") for s in input_lines]
-
+    print("input_lines length: " + str(len(input_lines)))
     # 是否出现错误
     all_right = True
     all_perfect = True
     for i, (_input, _output) in enumerate(zip(input_lines, output)):
-        if '(' in _output or ')' in _output:
-            res, score = False, -1
-        else:
-            (res, score) = are_expressions_equivalent(_input, _output)
-        print(f"第{i+1}行结果: " + str(res) + " 分数： " + str(score))
+        (res, score) = are_expressions_equivalent(_input, _output)
+        print(f"第{i + 1}行结果: " + str(res) + " 分数： " + str(score))
         all_right = all_right and res
         all_perfect = all_perfect and (score == 1)
 
@@ -67,5 +76,5 @@ def run(config_file='config.ini', cmd=None):
 
     return all_right and all_perfect
 
-if __name__ == '__main__':
-    run("config.ini")
+if __name__ == "__main__":
+    run2('config.ini', ['n',10])
