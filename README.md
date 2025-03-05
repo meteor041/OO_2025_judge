@@ -5,7 +5,32 @@
 本项目旨在为 OO2025 课程的学生提供一个自动化测试工具，用于测试 `Java` 作业的正确性。通过配置 `config.ini` 文件，程序可以自动运行指定的 `Java` 文件，并生成测试样例和输出结果。
 
 ## 项目结构
-
+```commandline
+src
+│  config.ini
+│  run.py
+│  run2.py
+│
+├─plugin
+│  │
+│  ├─hw1
+│  │      are_expression_equivalent1.py
+│  │      generate1.py
+│  │      run_java_file1.py
+│  │      score1.py
+│  │
+│  ├─hw2
+│  │     are_expression_equivalent2.py
+│  │     generate2.py
+│  │     run_java_file2.py
+│  │     spreader2.py
+│  │
+│  ├─public
+│  │     ai_expression.py
+│  │     find_java_files.py
+│  │     remove_leading_zero.py
+│  │  
+```
 ## 步骤
 
 1. 填充`config.ini`文件
@@ -47,6 +72,7 @@ output_folder_path = /path/to/output/folder
         ```
       
    3. 大语言模型辅助测试程序
+   
         在 `config.ini` 文件中作如下修改(仅作示例),可以通过API调用大语言模型进行字符串的相等判断. 这种方法在面对长表达式时的可靠性较差.
       ```ini
       [GPT]
