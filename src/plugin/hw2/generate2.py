@@ -202,5 +202,5 @@ def generate_expression(max_depth=8, max_length=200) -> str:
 
 
 if __name__ == '__main__':
-    res = generate_expression(max_depth=2)
+    res = generate_expression(max_depth=1)
     print(res)

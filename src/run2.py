@@ -1,10 +1,10 @@
 import os
 import configparser
 
-from src.plugin.public.find_java_files import find_java_files
-from src.plugin.hw2.generate2 import generate_expression
-from src.plugin.hw2.run_java_file2 import run_java_with_input_file_loop
-from src.plugin.hw2.are_expression_equivalent2 import are_expressions_equivalent
+from plugin.public.find_java_files import find_java_files
+from plugin.hw2.generate2 import generate_expression
+from plugin.hw2.run_java_file2 import run_java_with_input_file_loop
+from plugin.hw2.are_expression_equivalent2 import are_expressions_equivalent
 
 def run2(config_file= 'config.ini', cmd=None):
     print('-' * 5 + "Designed by meteor041" + '-' * 5)
@@ -16,6 +16,8 @@ def run2(config_file= 'config.ini', cmd=None):
     main_class = config['DEFAULT']['main_class']
     output_path = config['DEFAULT']['output_folder_path']
 
+    ai_enable = (config['GPT']['gpt_enable'] == 'y')
+    api = config['GPT']['api']
     # auto_generation = config['COMMAND']['auto_generation']
     # run_times = config['COMMAND']['run_times']
     input_file_path = os.path.join(output_path, "input.txt")
@@ -54,6 +56,8 @@ def run2(config_file= 'config.ini', cmd=None):
                         input_lines = [new]
                     else:
                         input_lines.append(new)
+                    new = ""
+                    count = 0
 
     java_files = find_java_files(java_file_folder_path)
     output = run_java_with_input_file_loop(java_files, input_file_path, main_class, java_dir, output_path)
@@ -65,7 +69,7 @@ def run2(config_file= 'config.ini', cmd=None):
     # 是否出现错误
     all_right = True
     for i, (_input, _output) in enumerate(zip(input_lines, output)):
-        res = are_expressions_equivalent(_input, _output)
+        res = are_expressions_equivalent(_input, _output, ai_enable, api)
         print(f"第{i + 1}行结果: " + str(res))
         all_right = all_right and res
 

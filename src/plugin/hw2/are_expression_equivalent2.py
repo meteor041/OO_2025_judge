@@ -1,9 +1,14 @@
 from sympy import *
 import random
 import re
-from src.plugin.public.remove_leading_zero import remove_leading_zeros_from_string
-from src.plugin.hw2.spreader2 import expand_expression
-def are_expressions_equivalent(expr1_str : list[str], expr2_str : str, x_value_count=10):
+from concurrent.futures import ThreadPoolExecutor, TimeoutError
+
+from ..public.remove_leading_zero import remove_leading_zeros_from_string
+from ..hw2.spreader2 import expand_expression
+from ..public.ai_expression import ai_test_equivalent
+
+
+def are_expressions_equivalent(expr1_str : list[str], expr2_str : str, ai_enable=False, api=None, x_value_count=10):
     """
     比较两个含 x 的表达式是否等价。
 
@@ -67,16 +72,31 @@ def are_expressions_equivalent(expr1_str : list[str], expr2_str : str, x_value_c
     expr1 = parse_expr(expr1)
     expr2 = parse_expr(expr2)
 
-    if expr1.equals(expr2):
-        return True
+    if ai_enable == True:
+        return ai_test_equivalent(expr1, expr2, api) == 0
 
-    # 2. 数值比较 (如果 sympy 无法确定)
+    # # 2. 数值比较 (如果 sympy 无法确定)
+    res = True
+    min_diff = float('inf')
     for _ in range(x_value_count):
         x_val = random.uniform(-10, 10)  # 生成随机的 x 值
-        if abs(expr1.subs(x, x_val) - expr2.subs(x, x_val)).evalf() > 1e-6:  # 允许一定的误差
+        diff = abs(expr1.subs(x, x_val) - expr2.subs(x, x_val)).evalf()
+        min_diff = min(min_diff, diff)
+        if  diff > 1e-6:  # 允许一定的误差
+            res = False
+
+    if not res:
+        try:
+            # 使用 ThreadPoolExecutor 设置超时
+            with ThreadPoolExecutor() as executor:
+                future = executor.submit(expr1.equals, expr2)
+                res = future.result(timeout=3)  # 设置超时时间为 3 秒
+        except TimeoutError:
+            # 如果超时，返回数值代入比较的结果
+            print("equals 方法超时，返回值最小计算结果为: " + str(min_diff))
             return False
 
-    return True  # 数值比较也通过了
+    return True
 
     # except (SyntaxError, TypeError, ValueError) as e:
     #     print(f"(are_expression_equivalent2)表达式解析或计算时发生错误: {e}")
