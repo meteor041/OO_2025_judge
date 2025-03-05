@@ -71,9 +71,9 @@ def are_expressions_equivalent(expr1_str : list[str], expr2_str : str, x_value_c
     for _ in range(x_value_count):
         x_val = random.uniform(-10, 10)  # 生成随机的 x 值
         if abs(expr1.subs(x, x_val) - expr2.subs(x, x_val)).evalf() > 1e-6:  # 允许一定的误差
-            return False, -1
+            return False
 
-    return True, 1  # 数值比较也通过了
+    return True  # 数值比较也通过了
 
     # except (SyntaxError, TypeError, ValueError) as e:
     #     print(f"(are_expression_equivalent2)表达式解析或计算时发生错误: {e}")

@@ -61,20 +61,17 @@ def run2(config_file= 'config.ini', cmd=None):
     for i, _output in enumerate(output):
         print(f"你的输出第{i+1}行: {_output}")
 
-    print("input_lines length: " + str(len(input_lines)))
     # 是否出现错误
     all_right = True
     all_perfect = True
     for i, (_input, _output) in enumerate(zip(input_lines, output)):
-        (res, score) = are_expressions_equivalent(_input, _output)
-        print(f"第{i + 1}行结果: " + str(res) + " 分数： " + str(score))
+        res = are_expressions_equivalent(_input, _output)
+        print(f"第{i + 1}行结果: " + str(res))
         all_right = all_right and res
-        all_perfect = all_perfect and (score == 1)
 
     print("是否全部运行正确:" + str(all_right))
-    print("性能分是否满分:" + str(all_perfect))
 
     return all_right and all_perfect
 
 if __name__ == "__main__":
-    run2('config.ini', ['n',10])
+    run2('config.ini')
