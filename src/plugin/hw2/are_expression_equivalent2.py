@@ -67,6 +67,9 @@ def are_expressions_equivalent(expr1_str : list[str], expr2_str : str, x_value_c
     expr1 = parse_expr(expr1)
     expr2 = parse_expr(expr2)
 
+    if expr1.equals(expr2):
+        return True
+
     # 2. 数值比较 (如果 sympy 无法确定)
     for _ in range(x_value_count):
         x_val = random.uniform(-10, 10)  # 生成随机的 x 值
