@@ -7,6 +7,7 @@ from src.plugin.hw2.run_java_file2 import run_java_with_input_file_loop
 from src.plugin.hw2.are_expression_equivalent2 import are_expressions_equivalent
 
 def run2(config_file= 'config.ini', cmd=None):
+    print('-' * 5 + "Designed by meteor041" + '-' * 5)
     config = configparser.ConfigParser()
     config.read(config_file, encoding='utf-8')
 
@@ -21,7 +22,7 @@ def run2(config_file= 'config.ini', cmd=None):
     if not os.path.exists(os.path.dirname(input_file_path)):
         os.mkdir(os.path.dirname(input_file_path))
         print(str(os.path.basename(input_file_path)) + "已创建")
-    useGen = input("是否使用内置数据生成(y/n): ") if cmd == None else cmd[0]
+    useGen = input("是否使用内置数据生成(y/n,默认y): ") if cmd == None else cmd[0]
     if useGen.lower() == 'y' or useGen == '':
         times = input("输入运行次数: (最多1000次,默认10次): ") if cmd == None else cmd[1]
         if times == '':
@@ -68,7 +69,8 @@ def run2(config_file= 'config.ini', cmd=None):
         print(f"第{i + 1}行结果: " + str(res))
         all_right = all_right and res
 
+
     return all_right
 
 if __name__ == "__main__":
-    run2('config.ini')
+    print("最终结果: " + str(run2('config.ini')))

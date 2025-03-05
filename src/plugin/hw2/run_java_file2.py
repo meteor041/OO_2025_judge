@@ -69,7 +69,7 @@ def run_java_with_input_file_loop(java_files, input_file_path, main_class, java_
 
             # 将多行输入拼接成一个字符串，用换行符分隔
             input_str = "\n".join(input_data)
-            print(f"第 {run_times+1} 行运行\n输入: {input_str}")
+            print('-' * 5 + f"第 {run_times+1} 次运行" + '-' * 5 + f"\n输入: {input_str}" )
 
             process = subprocess.Popen(  # 使用 Popen 来实时输入数据
                 ["java", "-cp", java_dir, main_class],
