@@ -9,7 +9,7 @@ from ..public.ai_expression import ai_test_equivalent
 
 
 def are_expressions_equivalent(expr1_str : list[str], expr2_str : str,
-                               ai_enable=False, api=None, base_url, model,
+                               ai_enable=False, api=None, base_url=None, model=None,
                                x_value_count=10):
     """
     比较两个含 x 的表达式是否等价。
