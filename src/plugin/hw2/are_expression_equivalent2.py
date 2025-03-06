@@ -82,7 +82,16 @@ def are_expressions_equivalent(expr1_str : list[str], expr2_str : str,
     min_diff = float('inf')
     for _ in range(x_value_count):
         x_val = random.uniform(-10, 10)  # 生成随机的 x 值
-        diff = abs(expr1.subs(x, x_val) - expr2.subs(x, x_val)).evalf()
+        # diff = abs(expr1.subs(x, x_val) - expr2.subs(x, x_val)).evalf()
+        try:
+            # 使用 ThreadPoolExecutor 设置超时
+            with ThreadPoolExecutor() as executor:
+                future = executor.submit(abs(expr1.subs(x, x_val) - expr2.subs(x, x_val)).evalf)
+                diff = future.result(timeout=3)  # 设置超时时间为 3 秒
+        except TimeoutError:
+            # 如果超时，返回数值代入比较的结果
+            print("代值计算方法超时")
+            return False
         min_diff = min(min_diff, diff)
         if  diff > 1e-6:  # 允许一定的误差
             res = False
