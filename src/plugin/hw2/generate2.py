@@ -42,7 +42,7 @@ def generate_expression(max_depth=8, max_length=200) -> str:
 
     def generate_exponent():
         """生成指数"""
-        return "^" + generate_whitespace() + generate_integer(1)
+        return "^" + generate_whitespace() + str(random.randint(0, 8))
 
     def generate_power_function():
         """生成幂函数"""
@@ -130,24 +130,24 @@ def generate_expression(max_depth=8, max_length=200) -> str:
 
         expression += generate_term(depth) + generate_whitespace()
 
-
-        while random.random() < 0.4:
+        prob = 0.4
+        while random.random() < prob :
             expression += random.choice(["+", "-"]) + generate_whitespace() + generate_term(depth) + generate_whitespace()
-
+            prob *= 0.8
         return expression
 
     def generate_function_call_n_1(f_type):
         if f_type == 3:
-            return 'f{n-1}' + generate_whitespace() + '(' + generate_expression_recursive(max_depth-1) + ',' + \
-                generate_whitespace() + generate_expression_recursive(max_depth-1) + generate_whitespace() +')'
+            return 'f{n-1}' + generate_whitespace() + '(' + generate_factor(max_depth-1) + ',' + \
+                generate_whitespace() + generate_factor(max_depth-1) + generate_whitespace() +')'
         else:
             return 'f{n-1}' + generate_whitespace() + '(' + generate_expression_recursive(max_depth-1) \
                     + generate_whitespace() + ')'
 
     def generate_function_call_n_2(f_type):
         if f_type == 3:
-            return 'f{n-2}' + generate_whitespace() + '(' + generate_expression_recursive(max_depth-1) + ',' + \
-                generate_whitespace() + generate_expression_recursive(max_depth-1) + generate_whitespace() +')'
+            return 'f{n-2}' + generate_whitespace() + '(' + generate_factor(max_depth-1) + ',' + \
+                generate_whitespace() + generate_factor(max_depth-1) + generate_whitespace() +')'
         else:
             return 'f{n-2}' + generate_whitespace() + '(' + generate_expression_recursive(max_depth-1) \
                     + generate_whitespace() + ')'
