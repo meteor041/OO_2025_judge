@@ -110,9 +110,10 @@ def generate_expression(max_depth=8, max_length=200) -> str:
 
         expression += generate_factor(depth)
 
-        while random.random() < 0.3:
+        prob = 0.3
+        while random.random() < prob:
             expression += generate_whitespace() + "*" + generate_whitespace() + generate_factor(depth)
-
+            prob *= 0.5
         return expression
 
 
@@ -175,14 +176,14 @@ def generate_expression(max_depth=8, max_length=200) -> str:
             initial_definition1 = 'f{1}' + generate_whitespace() + '(' + generate_whitespace() + value + \
                                   generate_whitespace() + ')' + generate_whitespace() + '=' + generate_whitespace() + \
                                   generate_expression_recursive(max_depth)
-        initial_definitionn = 'f{n}' + generate_whitespace() + '(' + generate_whitespace() + value + \
+        initial_definition = 'f{n}' + generate_whitespace() + '(' + generate_whitespace() + value + \
                               generate_whitespace() + ')' + generate_whitespace() + '=' + \
                               generate_constant_factor() + generate_whitespace() + '*' + generate_whitespace() + \
                               generate_function_call_n_1(function_type) + generate_whitespace() + random.choice(['+', '-']) + \
                               generate_constant_factor() + generate_whitespace() + '*' + generate_function_call_n_2(function_type) + \
                               random.choice(['+', '-']) + generate_expression_recursive(max_depth)
-        while len(initial_definitionn) > 75:
-            initial_definitionn = 'f{n}' + generate_whitespace() + '(' + generate_whitespace() + value +\
+        while len(initial_definition) > 75:
+            initial_definition = 'f{n}' + generate_whitespace() + '(' + generate_whitespace() + value +\
                                   generate_whitespace() + ')' + generate_whitespace() + '=' + \
                                   generate_constant_factor() + generate_whitespace() + '*' + generate_whitespace() + \
                                   generate_function_call_n_1(function_type) + generate_whitespace() + random.choice(['+', '-']) + \
@@ -190,7 +191,9 @@ def generate_expression(max_depth=8, max_length=200) -> str:
                                   random.choice(['+', '-']) + generate_expression_recursive(max_depth)
         arguments = ['x']
         forbid_function = False
-        return initial_definition0 + '\n' + initial_definition1 + '\n' + initial_definitionn
+        definition_list = [initial_definition0, initial_definition1, initial_definition]
+        random.shuffle(definition_list)
+        return definition_list[0] + '\n' + definition_list[1] + '\n' + definition_list[2]
 
     s = generate_expression_recursive(max_depth)
     while len(s) > max_length:
