@@ -107,7 +107,7 @@ def are_expressions_equivalent(expr1_str : list[str], expr2_str : str,
             print("equals 方法超时，返回值最小计算结果为: " + str(min_diff))
             return False
 
-    return True
+    return res
 
     # except (SyntaxError, TypeError, ValueError) as e:
     #     print(f"(are_expression_equivalent2)表达式解析或计算时发生错误: {e}")
