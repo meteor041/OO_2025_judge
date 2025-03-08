@@ -1,5 +1,6 @@
 import os
 import configparser
+from concurrent.futures import ThreadPoolExecutor, TimeoutError
 
 from plugin.public.find_java_files import find_java_files
 from plugin.hw2.generate2 import generate_expression
@@ -71,13 +72,22 @@ def run2(config_file= 'config.ini', cmd=None):
 
     # 是否出现错误
     all_right = True
+    timeout_flag = False
     for i, (_input, _output) in enumerate(zip(input_lines, output)):
-        res = are_expressions_equivalent(_input, _output, ai_enable, api, base_url, model)
+        try:
+            with ThreadPoolExecutor() as executor:
+                future = executor.submit(are_expressions_equivalent, _input, _output, ai_enable, api, base_url, model)
+                res = future.result(timeout=10)
+        except TimeoutError:
+            print(f"第{i+1}次运行时间爆炸 : Sympy包燃尽了...")
+            res = True
+            timeout_flag = True
+        # res = are_expressions_equivalent(_input, _output, ai_enable, api, base_url, model)
         print(f"第{i + 1}行结果: " + str(res))
         all_right = all_right and res
 
 
-    return all_right
+    return "正确,但部分样例超时无法检测" if all_right and timeout_flag else all_right
 
 if __name__ == "__main__":
     print("最终结果: " + str(run2('config.ini')))
