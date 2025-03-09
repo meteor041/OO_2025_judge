@@ -142,7 +142,7 @@ def generate_expression(max_depth=8, max_length=200) -> str:
             return 'f{n-1}' + generate_whitespace() + '(' + generate_factor(max_depth-1) + ',' + \
                 generate_whitespace() + generate_factor(max_depth-1) + generate_whitespace() +')'
         else:
-            return 'f{n-1}' + generate_whitespace() + '(' + generate_expression_recursive(max_depth-1) \
+            return 'f{n-1}' + generate_whitespace() + '(' + generate_factor(max_depth-1) \
                     + generate_whitespace() + ')'
 
     def generate_function_call_n_2(f_type):
@@ -150,7 +150,7 @@ def generate_expression(max_depth=8, max_length=200) -> str:
             return 'f{n-2}' + generate_whitespace() + '(' + generate_factor(max_depth-1) + ',' + \
                 generate_whitespace() + generate_factor(max_depth-1) + generate_whitespace() +')'
         else:
-            return 'f{n-2}' + generate_whitespace() + '(' + generate_expression_recursive(max_depth-1) \
+            return 'f{n-2}' + generate_whitespace() + '(' + generate_factor(max_depth-1) \
                     + generate_whitespace() + ')'
 
     def generate_function_definition():
@@ -181,7 +181,7 @@ def generate_expression(max_depth=8, max_length=200) -> str:
                               generate_constant_factor() + generate_whitespace() + '*' + generate_whitespace() + \
                               generate_function_call_n_1(function_type) + generate_whitespace() + random.choice(['+', '-']) + \
                               generate_constant_factor() + generate_whitespace() + '*' + generate_function_call_n_2(function_type) + \
-                              random.choice(['+', '-']) + generate_expression_recursive(max_depth)
+                              '+' + generate_expression_recursive(max_depth)
         while len(initial_definition) > 75:
             initial_definition = 'f{n}' + generate_whitespace() + '(' + generate_whitespace() + value +\
                                   generate_whitespace() + ')' + generate_whitespace() + '=' + \

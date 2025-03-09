@@ -3,18 +3,20 @@ import configparser
 from concurrent.futures import ThreadPoolExecutor, TimeoutError
 
 from plugin.public.find_java_files import find_java_files
+from plugin.public.find_main_java_files import find_main_java_files
 from plugin.hw2.generate2 import generate_expression
 from plugin.hw2.run_java_file2 import run_java_with_input_file_loop
 from plugin.hw2.are_expression_equivalent2 import are_expressions_equivalent
 
-def run2(config_file= 'config.ini', cmd=None):
+def run2(config_file= 'config.ini', cmd=None, if_judge=True):
     print('-' * 5 + "Designed by meteor041" + '-' * 5)
     config = configparser.ConfigParser()
     config.read(config_file, encoding='utf-8')
 
     java_file_folder_path = config['DEFAULT']['java_file_folder_path']
     java_dir = config['DEFAULT']['java_dir']
-    main_class = config['DEFAULT']['main_class']
+    # main_class = config['DEFAULT']['main_class']
+    main_class = find_main_java_files(java_dir)
     output_path = config['DEFAULT']['output_folder_path']
 
     ai_enable = (config['GPT']['gpt_enable'] == 'y')
@@ -65,6 +67,8 @@ def run2(config_file= 'config.ini', cmd=None):
 
     java_files = find_java_files(java_file_folder_path)
     output = run_java_with_input_file_loop(java_files, input_file_path, main_class, java_dir, output_path)
+    if not if_judge:
+        return output
     output = [s.replace("^", "**") for s in output]
 
     for i, _output in enumerate(output):
