@@ -42,7 +42,11 @@ def generate_expression(max_depth=8, max_length=200) -> str:
 
     def generate_exponent():
         """生成指数"""
-        return "^" + generate_whitespace() + str(random.randint(0, 8))
+        expression =  "^" + generate_whitespace()
+        if random.random() < 0.5:
+            expression += '+'
+        expression += str(random.randint(0, 8))
+        return expression
 
     def generate_power_function():
         """生成幂函数"""
@@ -65,8 +69,10 @@ def generate_expression(max_depth=8, max_length=200) -> str:
     def generate_trigonometric_functions(depth):
         """生成三角函数"""
         rand = random.random()
-        expression = random.choice(["sin", "cos"]) + generate_whitespace() + '(' + generate_factor(depth-1) + \
-                      generate_whitespace() + ')' + generate_whitespace() + generate_exponent()
+        expression = random.choice(["sin", "cos"]) + generate_whitespace() + '(' + generate_whitespace()  + generate_factor(depth-1) + \
+                      generate_whitespace() + ')'
+        if rand < 0.5:
+            generate_whitespace() + generate_exponent()
         return expression
 
     def generate_function_call(depth):
@@ -76,7 +82,7 @@ def generate_expression(max_depth=8, max_length=200) -> str:
                 generate_factor(depth - 1) + ',' + generate_whitespace() + generate_factor(depth-1) + generate_whitespace() + ')'
         elif function_type == 2 or function_type == 1:
             return "f{" + str(random.randint(0, 5)) + '}' + generate_whitespace() + '(' + generate_whitespace() + \
-                    generate_factor(depth - 1) + ')'
+                    generate_factor(depth - 1) + generate_whitespace() + ')'
         else:
             print("GENERATE_FUNCTION_CALL_ERROR!!!")
 
@@ -106,7 +112,7 @@ def generate_expression(max_depth=8, max_length=200) -> str:
         """生成项"""
         expression = ""
         if random.random() < 0.2:
-            expression += random.choice(["+", "-", ""]) + generate_whitespace()
+            expression += random.choice(["+", "-"]) + generate_whitespace()
 
         expression += generate_factor(depth)
 
@@ -125,9 +131,9 @@ def generate_expression(max_depth=8, max_length=200) -> str:
             else:
                 return generate_power_function()
 
-        expression = ""
+        expression = generate_whitespace()
         if random.random() < 0.2:
-            expression += generate_whitespace() + random.choice(["+", "-", ""]) + generate_whitespace()
+            expression +=  random.choice(["+", "-", ""]) + generate_whitespace()
 
         expression += generate_term(depth) + generate_whitespace()
 
@@ -188,7 +194,7 @@ def generate_expression(max_depth=8, max_length=200) -> str:
                                   generate_constant_factor() + generate_whitespace() + '*' + generate_whitespace() + \
                                   generate_function_call_n_1(function_type) + generate_whitespace() + random.choice(['+', '-']) + \
                                   generate_constant_factor() + generate_whitespace() + '*' + generate_function_call_n_2(function_type) + \
-                                  random.choice(['+', '-']) + generate_expression_recursive(max_depth)
+                                  '+' + generate_expression_recursive(max_depth)
         arguments = ['x']
         forbid_function = False
         definition_list = [initial_definition0, initial_definition1, initial_definition]
